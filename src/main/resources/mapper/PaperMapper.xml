@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="onlineexam.blakeexam.dao.PaperMapper" >
+    <resultMap id="BaseResultMap" type="onlineexam.blakeexam.entity.Paper" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="contest_id" property="contestId" jdbcType="INTEGER" />
+        <result column="cq" property="cq" jdbcType="VARCHAR" />
+        <result column="cp" property="cp" jdbcType="VARCHAR" />
+        <result column="dp" property="dp" jdbcType="VARCHAR" />
+        <result column="jp" property="jp" jdbcType="VARCHAR" />
+        <result column="ap" property="ap" jdbcType="VARCHAR" />
+        <result column="score" property="score" jdbcType="INTEGER" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id,contest_id,cq,cp,dp,jp,ap,score
+    </sql>
+
+    <insert id="addPaper" parameterType="onlineexam.blakeexam.entity.Paper" >
+        insert into t_penguin_paper
+        (contest_id, cq,cp,dp,jp,ap,score)
+        values (#{paper.contestId}, #{paper.cq}, #{paper.cp},
+        #{paper.dp}, #{paper.jp}, #{paper.ap}, #{paper.score})
+    </insert>
+
+    <delete id="deletePaper" parameterType="int">
+        DELETE FROM t_penguin_paper
+        where id = #{id}
+    </delete>
+
+    <update id="updatePaper" parameterType="onlineexam.blakeexam.entity.Paper">
+        UPDATE t_penguin_paper
+        SET
+         cq = #{paper.cq},cp = #{paper.cp},
+         dp = #{paper.dp}, jp = #{paper.jp}, ap = #{paper.ap}, score = #{paper.score}
+        WHERE
+        contest_id = #{paper.contestId}
+    </update>
+
+    <select id="findPaperById" resultMap="BaseResultMap" parameterType="int" >
+        SELECT
+        *
+        FROM t_penguin_paper
+        WHERE id = #{id}
+    </select>
+
+    <select id="getPaperByContestId" resultMap="BaseResultMap" resultType="int" >
+        SELECT
+        *
+        FROM t_penguin_paper
+        WHERE contest_id = #{contestId}
+    </select>
+
+    <select id="getGradesByStudentId" resultMap="BaseResultMap" >
+        SELECT
+        *
+        FROM t_penguin_grade
+        WHERE  student_id = #{studentId}
+    </select>
+
+    <select id="getGradesByContestId" resultMap="BaseResultMap" >
+        SELECT
+        *
+        FROM t_penguin_grade
+        WHERE contest_id = #{contestId}
+        ORDER BY student_id ASC
+    </select>
+</mapper>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <title>在线考试系统</title>
+    <link rel="stylesheet" th:href="@{https://cdn.bootcss.com/semantic-ui/2.2.13/semantic.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+    <link rel="stylesheet" th:href="@{/css/problem/problemlist.css}" />
+    <script type="text/javascript" th:src="@{https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{https://cdn.bootcss.com/semantic-ui/2.2.13/semantic.min.js}"></script>
+    <script type="text/javascript" th:src="@{https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/app.js}"></script>
+    <script type="text/javascript" th:src="@{/js/contest/enterContest.js}"></script>
+</head>
+<body>
+<div class="ui fixed inverted menu">
+    <a th:href="@{/}" class="header item">
+        <!--<img class="ui" th:src="@{/img/logo_flat.png}" width="104" height="24" alt="" />-->
+        <img class="ui" th:src="@{/img/logo.png}" width="156" height="32" alt="" />
+    </a>
+    <a th:href="@{/contest/index}" href="#" class="item">
+        <i class="desktop icon"></i>在线考试
+    </a>
+    <a th:href="@{/problemset/list}" class="item">
+        <i class="list layout icon"></i>题库中心
+    </a>
+    <a th:href="@{/mycontest/list}" class="active item">
+        <i class="list layout icon"></i>我的课程
+    </a>
+    <a th:onclick="'app.showLogin()'" class="right item" th:if="${current_account == null}">
+        <i class="sign in icon"></i>登录
+    </a>
+    <div class="ui simple dropdown right item" th:if="${current_account != null}">
+        <img class="ui avatar image" th:src="@{'/upload/images/'+${current_account.avatarImgUrl}}" />
+        <span th:text="${current_account.name}"></span> <i class="dropdown icon"></i>
+        <div class="menu">
+            <a class="item" th:href="@{/account/profile}">
+                <i class="user icon"></i>我的主页
+            </a>
+            <a class="item" id="logout">
+                <i class="sign out icon"></i>退出
+            </a>
+        </div>
+    </div>
+</div>
+<div class="ui header container">
+    <div class="ui large breadcrumb">
+        <a class="section" th:href="@{/}"><i class="home icon"></i>首页</a>
+        <i class="right chevron icon divider"></i>
+        <a class="section" th:href="@{/mycontest/list}">我的课程</a>
+        <i class="right chevron icon divider"></i>
+        <div class="active section" >加入课程</div>
+    </div>
+</div>
+
+<div class="ui problemList container">
+    <div class="ui secondary pointing menu">
+        <a class="active item"><i class="list icon"></i>课程列表</a>
+    </div>
+    <!--<div class="ui accordion segment">-->
+        <!--&lt;!&ndash;<div class="title"><i class="dropdown icon"></i>筛选</div>&ndash;&gt;-->
+        <!--<form class="content ui form segment">-->
+            <!--<div class="two stackable fields">-->
+                <!--<div class="field">-->
+                    <!--<label>题目描述</label>-->
+                    <!--<input placeholder="请输入相关题目描述" type="text" id="content"/>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--<button type="button" class="positive ui button" th:onclick="'javascript:queryContest()'" >查询</button>-->
+        <!--</form>-->
+    <!--</div>-->
+    <table class="ui table">
+        <thead><tr>
+            <th class="five wide">课程名称</th>
+            <th class="second wide">试卷名称</th>
+            <th class="second wide">老师名称</th>
+            <th class="second wide">创建时间</th>
+            <th class="second wide">操作</th>
+        </tr></thead>
+        <tbody>
+        <tr th:if="${data['contestsSize'] == 0}">
+            <td colspan="9" style="padding: 0px;">
+                <div class="alert alert-warning" role="alert">
+                    <i class="ui header"></i>当前还没有课程呢！
+                </div>
+            </td>
+        </tr>
+        <tr th:each="contest : ${data['contests']}">
+            <td>
+                <span class="ui header" th:text="${contest.subjectName}">JAVA</span>
+            </td>
+            <td>
+                <span th:text="${contest.title}">java考试</span>
+            </td>
+            <td>
+                <span th:text="${contest.teacherName}">小红</span>
+            </td>
+            <td>
+                <span th:if="${#dates.format(contest.createTime, 'yyyy-MM-dd HH:mm:ss')}">2021-1-11 11:00:00</span>
+            </td>
+            <td><a th:onclick="'javascript:joinContest(\''+${contest.id}+'\',\''+${current_account.id}+'\')'" class="tiny blue ui button">加入</a></td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+<!-- 分页 -->
+<div class="ui subPage container">
+    <div class="ui pagination menu" id="subPageMenu">
+
+    </div>
+</div>
+<!-- 不可抗力元素 -->
+<div class="second-footer">
+</div>
+<!--<div id="footer">-->
+    <!--<div class="ui container">-->
+        <!--<div class="ui stackable two columns grid">-->
+            <!--<div class="column">-->
+                <!--<div class="ui two columns grid">-->
+                    <!--<div class="column">-->
+                        <!--<h3>项目介绍</h3>-->
+                        <!--在线考试系统是一个在线测试学习系统，并用于辅助课程教学和学生学习。-->
+                    <!--</div>-->
+                    <!--<div class="column">-->
+                        <!--<h3>联系我们</h3>-->
+                        <!--如有问题请发邮件到-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="right aligned column">-->
+                <!--&copy; 2021  All Rights Reserved &nbsp;&nbsp;-->
+                <!--&lt;!&ndash;<br />&ndash;&gt;-->
+                <!--&lt;!&ndash;网站版本：<a href="#">v1.0.0 Beta #20180109</a>&nbsp;&nbsp;&ndash;&gt;-->
+                <!--&lt;!&ndash;服务器时间：<span id="current_server_timer"></span>&ndash;&gt;-->
+                <!--&lt;!&ndash;<br />&ndash;&gt;-->
+                <!--&lt;!&ndash;站长统计 | 今日IP[91] | 今日PV[4511] | 昨日IP[133] | 昨日PV[10109] | 当前在线[1]&ndash;&gt;-->
+                <!--&lt;!&ndash;-->
+                <!--TODO::pv,uv统计-->
+                <!--<span id='cnzz_stat_icon_1261763113'></span>-->
+                <!--<script th:src='@{//s95.cnzz.com/stat.php?id=1261763113&amp;online=1&amp;show=line}' type='text/javascript'></script>-->
+                <!--&ndash;&gt;-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+<!-- 登录模态框 -->
+<div class="ui mini modal" id="loginModal">
+    <div class="header">登录</div>
+    <div class="content">
+        <form class="ui form" id="loginModalForm">
+            <div class="ui hidden negative message" id="loginModalErrorMessage">
+                <!--
+                <div class="header">错误提示</div>
+                <p></p>
+                -->
+            </div>
+            <div class="field required">
+                <label>账号</label>
+                <div class="ui left icon input">
+                    <input id="username" type="text" placeholder="请输入学号或教工号或指定账号" />
+                    <i class="user icon"></i>
+                </div>
+            </div>
+            <div class="field required">
+                <label>密码</label>
+                <div class="ui left icon input">
+                    <input id="password" type="password" />
+                    <i class="lock icon"></i>
+                </div>
+            </div>
+            <div class="field">
+                <div class="ui toggle checkbox">
+                    <input type="checkbox" id="rememberMe" name="rememberMe" tabindex="0" class="hidden" />
+                    <label>记住登录</label>
+                </div>
+            </div>
+            <div class="ui button" id="loginModalCloseButton">关闭</div>
+            <div class="ui primary button" id="loginModalSubmitButton">登录</div>
+        </form>
+    </div>
+</div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var pageNum = /*[[${data['pageNum']}]]*/;
+    var pageSize = /*[[${data['pageSize']}]]*/;
+    var totalPageNum = /*[[${data['totalPageNum']}]]*/;
+    var totalPageSize = /*[[${data['totalPageSize']}]]*/;
+    var subjectName = /*[[${data['subjectName']}]]*/;
+    var contests = /*[[${data['contests']}]]*/;
+    var contextPath = /*[[${#httpServletRequest.getContextPath()}]]*/;
+
+    $(function(){
+        app.init(contextPath);
+        enterContestPage.init(pageNum, pageSize, totalPageNum, totalPageSize, subjectName, contests);
+    });
+     /*]]>*/
+</script>
+</body>
+</html>

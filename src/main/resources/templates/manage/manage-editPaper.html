@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>在线考试系统控制台-考试管理-查看试卷</title>
+    <link rel="stylesheet" th:href="@{https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{https://cdn.bootcss.com/semantic-ui/2.2.13/semantic.min.css}" />
+    <link th:href="@{https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css}" rel="stylesheet" />
+    <link th:href="@{/css/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css}" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/manage/manage-app.css}" />
+    <!--<link rel="stylesheet" th:href="@{/css/manage/manager-bootstrap.css}" />-->
+
+    <script type="text/javascript" th:src="@{https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js}"></script>
+    <script type="text/javascript" th:src="@{/js/manage/manage-app.js}"></script>
+    <script type="text/javascript" th:src="@{/js/manage/manage-editPaper.js}"></script>
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#"><img style="width: 32px;height: 32px;" th:src="@{/img/manage-logo.png}" /></a>
+            <a class="navbar-brand" href="#">在线考试系统控制台</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        <img class="img-circle" style="width: 32px;height: 32px;" th:src="@{'/upload/images/'+${current_account.avatarImgUrl}}" />&nbsp;&nbsp;<span th:text="${current_account.name}"></span>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="javascript:void(0);">修改密码</a></li>
+                        <li><a id="logout">退出系统</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li class="active"><a href="#"><i class="fa fa-tv"></i>&nbsp;考试管理 <span class="sr-only">(current)</span></a></li>
+                <li><a th:href="@{/manage/question/list}"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;题目管理</a></li>
+                <li><a th:href="@{/manage/subject/list}"><span class="glyphicon glyphicon-book"></span>&nbsp;课程管理</a></li>
+                <li><a th:href="@{/manage/result/contest/list}"><span class="glyphicon glyphicon-signal"></span>&nbsp;成绩管理</a></li>
+                <li><a th:href="@{/manage/account/list}"><span class="glyphicon glyphicon-user"></span>&nbsp;用户管理</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <!--<h1 class="page-header">考试管理</h1>-->
+            <!--<div class="page-header">-->
+                <!--<h1><a th:href="@{/manage/contest/list}">考试管理</a>&nbsp;&nbsp;<a th:href="@{'/manage/contest/'+${data['contest'].id}+'/problems'}">试卷管理</a></h1>-->
+                <!--<h1><small th:text="${data['contest'].title} + '&nbsp;&nbsp;总分: ' + ${data['paper'].score}"></small></h1>-->
+            <!--</div>-->
+            <div class="ui page-header">
+                <!--<h1><a th:href="@{/manage/contest/list}">考试管理</a>&nbsp;&nbsp;<small th:text="${data['contest'].title} + '&nbsp;&nbsp;总分: ' + ${data['paper'].score}"></small></h1>-->
+                <div class="ui large breadcrumb">
+                    <a class="section" th:href="@{/manage/contest/list}">考试管理</a>
+                    <i class="right chevron icon divider"></i>
+                    <a class="section" th:href="@{'/manage/contest/'+${data['contest'].id}+'/problems'}">试卷管理</a>
+                    <i class="right chevron icon divider"></i>
+                    <div class="active section">查看试卷</div>
+                </div>
+            </div>
+
+            <div class="container">
+                <h1><small th:text="${data['contest'].title} + '&nbsp;&nbsp;总分: ' + ${data['paper'].score}"></small></h1>
+                <button type="button" id="export"  class="btn btn-success">下载试卷</button>
+                <div class="panel panel-default">
+                    <!--选择题-->
+            <div class="panel-heading">
+                <h5 class="panel-title">
+                    一、选择题
+                </h5>
+            </div>
+            <div class="panel-body">
+                <div class="card" th:each="cq,cqStat : ${data['cqs']}">
+                    <div class="card-header" ><span th:text="${cqStat.count}"></span>.
+                        <span th:text="${cq.content}"></span>&nbsp;&nbsp;&nbsp;（2分）
+                    </div>
+                    <div class="card-body">
+                        <input type="radio" name="choice" />A.<span th:text="${cq.optionA}" /><br/>
+                        <input type="radio" name="choice" />B.<span th:text="${cq.optionB}" /><br/>
+                        <input type="radio" name="choice" />C.<span th:text="${cq.optionC}" /><br/>
+                        <input type="radio" name="choice" />D.<span th:text="${cq.optionD}" /><br/>
+                        <!--<div th:style="${(cq.option4)==''?'display: none':''}"><input type="radio" name="choice"><span th:text="${cq.option4}" /></span></div>-->
+                        <!--<div th:style="${(cq.option5)==''?'display: none':''}"><input type="radio" name="choice"><span th:text="${cq.option5}" /></span></div>-->
+                    </div>
+                </div>
+            </div>
+                    <!--填空题-->
+            <div class="panel-heading">
+                <h5 class="panel-title">
+                    二、填空题
+                </h5>
+            </div>
+            <div class="panel-body">
+                <div class="card" th:each="cp,jqStat : ${data['cps']}">
+                    <div class="card-body" >
+                        <span th:text="${jqStat.count}"></span>.
+                        <span th:text="${cp.content}"></span>&nbsp;&nbsp;&nbsp;（5分）<br/>
+                        <textarea class="form-control" rows="1" style="width: 400px;"></textarea><span style="float: right">&nbsp;&nbsp;(答案从左往后依次，英文分号隔开;)</span>
+                    </div>
+                </div>
+            </div>
+                    <!--判断题-->
+            <div class="panel-heading">
+                <h5 class="panel-title">
+                    三、判断题
+                </h5>
+            </div>
+            <div class="panel-body">
+                <div class="card" th:each="jq,jqStat : ${data['jps']}">
+                    <div class="card-header" ><span th:text="${jqStat.count}"></span>.
+                        <span th:text="${jq.content}"></span>&nbsp;&nbsp;&nbsp;（1分）
+                    </div>
+                    <div class="card-body">
+                        <input type="radio" name="judge" /><span>是</span><br/>
+                        <input type="radio" name="judge" /><span>否</span>
+                    </div>
+                </div>
+            </div>
+                    <!--简答题-->
+            <div class="panel-heading">
+                <h5 class="panel-title">
+                    四、简答题
+                </h5>
+            </div>
+            <div class="panel-body">
+                <div class="card" th:each="dp,dpStat : ${data['dps']}">
+                    <div class="card-header" >
+                        <span th:text="${dpStat.count}"></span>.
+                        <span th:text="${dp.content}"></span>&nbsp;&nbsp;&nbsp;（10分）
+                    </div>
+                    <div class="card-body">
+                        <textarea class="form-control" rows="5" style="width: 600px;"></textarea>
+                    </div>
+                </div>
+            </div>
+                    <!--应用题-->
+            <div class="panel-heading">
+                <h5 class="panel-title">
+                    五、应用题
+                </h5>
+            </div>
+            <div class="panel-body">
+                <div class="card" th:each="aq,aqStat : ${data['aps']}">
+                    <div class="card-header" >
+                        <span th:text="${aqStat.count}"></span>.
+                        <span th:text="${aq.content}"></span>&nbsp;&nbsp;&nbsp;（20分）
+                    </div>
+                    <div class="card-body">
+                        <textarea class="form-control" rows="5" style="width: 600px;"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var contest = /*[[${data['contest']}]]*/;
+    var contextPath = /*[[${#httpServletRequest.getContextPath()}]]*/;
+
+    $(function(){
+        app.init(contextPath);
+        manageEditContestProblemPage.init(contest);
+    });
+    /*]]>*/
+</script>
+</body>
+</html>
+

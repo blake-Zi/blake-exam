@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="onlineexam.blakeexam.dao.MyClassMapper" >
+    <resultMap id="BaseResultMap" type="onlineexam.blakeexam.entity.MyClass" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="student_id" property="studentId" jdbcType="INTEGER" />
+        <result column="contest_id" property="contestId" jdbcType="INTEGER" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="finish_time" property="finishTime" jdbcType="TIMESTAMP" />
+        <result column="state" property="state" jdbcType="INTEGER" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id,student_id,contest_id,create_time,finish_time,state
+    </sql>
+
+    <insert id="insertMyclass" parameterType="onlineexam.blakeexam.entity.MyClass" >
+        insert into t_penguin_myclass
+        (student_id, contest_id)
+        values (#{myClass.studentId}, #{myClass.contestId})
+    </insert>
+
+    <delete id="deleteMyClass" parameterType="int">
+        DELETE FROM t_penguin_myclass
+        where id = #{id}
+    </delete>
+
+    <update id="updateMyClass" parameterType="onlineexam.blakeexam.entity.MyClass">
+        UPDATE t_penguin_myclass
+        SET
+        finish_time = #{myClass.finishTime}, state = #{myClass.state}
+        WHERE
+        id = #{myClass.id}
+    </update>
+
+    <select id="getMyClassById" resultMap="BaseResultMap" parameterType="int" >
+        SELECT
+        *
+        FROM t_penguin_myclass
+        WHERE id = #{id}
+    </select>
+
+    <select id="getMyclassCountById" resultType="int" >
+        SELECT
+        COUNT(1)
+        FROM t_penguin_myclass
+        WHERE student_id = #{studentId}
+    </select>
+
+    <select id="getMyClassByStudentId" resultMap="BaseResultMap" >
+        SELECT
+        *
+        FROM t_penguin_myclass
+        WHERE  student_id = #{studentId}
+    </select>
+
+    <select id="getMyClassByContestId" resultMap="BaseResultMap" >
+        SELECT
+        *
+        FROM t_penguin_myclass
+        WHERE contest_id = #{contestId}
+        ORDER BY student_id ASC
+    </select>
+
+    <select id="getMyClassByStudentIdAndContestId" resultMap="BaseResultMap" parameterType="int" >
+        SELECT
+        *
+        FROM t_penguin_myclass
+        WHERE student_id = #{studentId} AND
+         contest_id = #{contestId}
+    </select>
+
+    <delete id="deleteByStudentId" parameterType="int">
+        DELETE FROM t_penguin_myclass
+        where student_id = #{studentId}
+    </delete>
+
+    <delete id="deleteByContestId" parameterType="int">
+        DELETE FROM t_penguin_myclass
+        where contest_id = #{contestId}
+    </delete>
+
+    <select id="getMyContestByContestId" resultMap="BaseResultMap" parameterType="int">
+        SELECT
+        *
+        FROM t_penguin_myclass
+        WHERE contest_id = #{contestId}
+    </select>
+
+</mapper>
